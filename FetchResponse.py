@@ -30,22 +30,22 @@ def send_api_request(url, data):
 
 # Example usage
 if __name__ == "__main__":
-    api_url = "http://127.0.0.1:5000/predict"
+    api_url = "http://192.168.11.248:5000/predict"
     
     json_data = {
         'Age' : 50,
-        'Gender' : 1,
-        'Height' : 168,
+        'Gender' : 'Male',
+        'Height' : 168.0,
         'Weight' : 62.0,
-        'Cholesterol' : 0,
+        'Cholesterol' : 'Normal',
         'BMI' : 21.967120,
-        'BloodPressureCategory' : "bp_Hypertension Stage 1",
+        'BloodPressureCategory' : "hypertension stage 1",
         'Systolic' : 110,
         'Diastolic' : 80,
-        'Smoke' : 0,
-        'Alcohol' : 0,
-        'Active' : 1,
-        'Glucose' : 0
+        'Smoke' : 'non Smoker',
+        'Alcohol' : 'Alcoholic',
+        'Active' : 'Active',
+        'Glucose' : 'Normal'
     }
     
     response = send_api_request(api_url, json_data)
