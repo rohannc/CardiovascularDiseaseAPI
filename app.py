@@ -19,18 +19,40 @@ def cardiovascularPredict():
             return jsonify({"error": "Request must be JSON"}), 400
     
     age_years = input_dictionary['Age']
-    gender = input_dictionary['Gender']
+    if (input_dictionary['Gender'].lower() == 'female'):
+        gender = 0
+    else:
+        gender = 1
     height = input_dictionary['Height']
     weight = input_dictionary['Weight']
-    cholesterol = input_dictionary['Cholesterol']
+    if(input_dictionary['Cholesterol'].lower == 'normal'):
+        cholesterol = 0
+    elif(input_dictionary['Cholesterol'].lower == 'above normal'):
+        cholesterol = 1
+    else:
+        cholesterol = 2
     bmi = input_dictionary['BMI']
     bp_category = input_dictionary['BloodPressureCategory']
     ap_hi = input_dictionary['Systolic']
     ap_lo = input_dictionary['Diastolic']
-    smoke = input_dictionary['Smoke']
-    alco = input_dictionary['Alcohol']
-    active = input_dictionary['Active']
-    gluc = input_dictionary['Glucose']
+    if(input_dictionary['Smoke'].lower == 'smoker'):
+        smoke = 1
+    else:
+        smoke = 0
+    if(input_dictionary['Alcohol'].lower == 'alcoholic'):
+        alco = 1
+    else:
+        alco = 0
+    if(input_dictionary['Active'].lower == 'active'):
+        active = 1
+    else:
+        active = 0
+    if(input_dictionary['Cholesterol'].lower == 'normal'):
+        gluc = 0
+    elif(input_dictionary['Cholesterol'].lower == 'above normal'):
+        gluc = 1
+    else:
+        gluc = 2
 
     with open('model1.pkl', 'rb') as f:  # 'rb' = read binary mode
         loaded_model = pickle.load(f)
@@ -75,7 +97,7 @@ def transform_input_data(gender, height, weight, ap_hi, ap_lo, cholesterol, gluc
     df['gluc'] = df['gluc'] - 1
     
     # One-hot encode bp_category
-    bp_categories = ['bp_Normal', 'bp_Elevated', 'bp_Hypertension Stage 1', 'bp_Hypertension Stage 2']
+    bp_categories = ['normal', 'elevated', 'hypertension stage 1', 'hypertension stage 2']
     for category in bp_categories:
         df[category] = (df['bp_category'] == category).astype(int)
     
@@ -83,12 +105,12 @@ def transform_input_data(gender, height, weight, ap_hi, ap_lo, cholesterol, gluc
     df = df.drop('bp_category', axis=1)
     
     # Select and order final features
-    final_features = ['gender', 'height', 'weight', 'ap_hi', 'ap_lo', 'cholesterol', 'gluc', 'smoke', 'alco', 'active', 'age_years', 'bmi', 'bp_Elevated', 'bp_Hypertension Stage 1', 'bp_Hypertension Stage 2', 'bp_Normal']
+    final_features = ['gender', 'height', 'weight', 'ap_hi', 'ap_lo', 'cholesterol', 'gluc', 'smoke', 'alco', 'active', 'age_years', 'bmi', 'elevated', 'hypertension stage 1', 'hypertension stage 2', 'normal']
     
     return df[final_features].values[0].tolist()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
 
 
 
