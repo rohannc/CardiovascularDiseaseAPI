@@ -7,7 +7,7 @@ A comprehensive healthcare prediction system combining AI models for diabetes an
 
 This project is split into two repositories:
 1. **API and Models** (Current Repository): Contains the AI models and backend APIs
-2. **Mobile Application**: [Healthcare Prediction App Repository](https://github.com/rohannc/HealthcarePredictionApp) - React Native mobile application that consumes these APIs
+2. **Mobile Application**: [Healthcare Prediction App Repository](https://github.com/Soumyodeep-Das/Seva-BackSlash) - React Native mobile application that consumes these APIs
 
 ## 🌟 Features
 
@@ -135,4 +135,4 @@ Your Name - Rohan Chakraborty - chakrabortyrohan.abc01.com
 
 Project Links:
 - API Repository: [https://github.com/rohannc/CardiovascularDiseaseAPI](https://github.com/rohannc/CardiovascularDiseaseAPI)
-- Mobile App Repository: [https://github.com/rohannc/HealthcarePredictionApp](https://github.com/rohannc/HealthcarePredictionApp)
+- Mobile App Repository: [https://github.com/rohannc/HealthcarePredictionApp](https://github.com/Soumyodeep-Das/Seva-BackSlash)
