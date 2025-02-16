@@ -66,6 +66,39 @@ def cardiovascularPredict():
     result = 'Cardiovascular Disease detected' if prediction[0] == 1 else 'No Cardiovascular Disease detected'
     return jsonify({"result": result})
 
+@app.route('/detect')
+def findHealthIssue():
+    client = InferenceClient(
+	provider="together",
+	api_key="API_KEY"
+    )
+    data = request.get_json()
+    input_dictionary = {key: value for key, value in data.items()}
+
+    prompt = (
+    "You are a medical assistant that only provides information on health-related topics. "
+    "If a question is not related to health or medicine, respond with 'I can only answer "
+    "health-related questions.' Please provide accurate and helpful information for "
+    "health-related queries. and act as if you don't know that domain. State your points in brief"
+    )
+
+    messages = [
+	{
+		"role": "user",
+		"content": prompt + input_dictionary['value']
+	}
+    ]
+
+    completion = client.chat.completions.create(
+        model="deepseek-ai/DeepSeek-R1", 
+	    messages=messages, 
+	    max_tokens=500,
+    )
+
+    result = completion.choices[0].message.content
+    return jsonify({"result": result})
+    
+
 def transform_input_data(gender, height, weight, ap_hi, ap_lo, cholesterol, gluc, 
                          smoke, alco, active, age_years, bmi, bp_category):
     
