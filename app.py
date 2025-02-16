@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import pickle
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
+from huggingface_hub import InferenceClient
 
 app = Flask(__name__)
 
@@ -9,7 +10,7 @@ app = Flask(__name__)
 def hello_world():
     return '<h1>Hello, World!</h1>'
 
-@app.route('/predict', methods=['POST'])
+@app.route('/predictCardiovascular', methods=['POST'])
 def cardiovascularPredict():
     if request.is_json:
         if request.is_json:
@@ -18,23 +19,24 @@ def cardiovascularPredict():
         else:
             return jsonify({"error": "Request must be JSON"}), 400
     
-    age_years = input_dictionary['Age']
+    age_years = int(input_dictionary['Age'])
     if (input_dictionary['Gender'].lower() == 'female'):
         gender = 0
     else:
         gender = 1
-    height = input_dictionary['Height']
-    weight = input_dictionary['Weight']
+    height = float(input_dictionary['Height'])
+    weight = float(input_dictionary['Weight'])
     if(input_dictionary['Cholesterol'].lower == 'normal'):
         cholesterol = 0
     elif(input_dictionary['Cholesterol'].lower == 'above normal'):
         cholesterol = 1
     else:
         cholesterol = 2
-    bmi = input_dictionary['BMI']
+    bmi = float(weight / (height * height))
+    # bmi = float(input_dictionary['BMI'])
     bp_category = input_dictionary['BloodPressureCategory']
-    ap_hi = input_dictionary['Systolic']
-    ap_lo = input_dictionary['Diastolic']
+    ap_hi = int(input_dictionary['Systolic'])
+    ap_lo = int(input_dictionary['Diastolic'])
     if(input_dictionary['Smoke'].lower == 'smoker'):
         smoke = 1
     else:
@@ -47,9 +49,9 @@ def cardiovascularPredict():
         active = 1
     else:
         active = 0
-    if(input_dictionary['Cholesterol'].lower == 'normal'):
+    if(input_dictionary['Glucose'].lower == 'normal'):
         gluc = 0
-    elif(input_dictionary['Cholesterol'].lower == 'above normal'):
+    elif(input_dictionary['Glucose'].lower == 'above normal'):
         gluc = 1
     else:
         gluc = 2
@@ -66,7 +68,75 @@ def cardiovascularPredict():
     result = 'Cardiovascular Disease detected' if prediction[0] == 1 else 'No Cardiovascular Disease detected'
     return jsonify({"result": result})
 
-@app.route('/detect')
+@app.route('/predictDiabetes', methods=['POST'])
+def diabetesPredict():
+    if request.is_json:
+        if request.is_json:
+            data = request.get_json()
+            input_dictionary = {key: value for key, value in data.items()}
+        else:
+            return jsonify({"error": "Request must be JSON"}), 400
+    
+    if(input_dictionary['BloodPressure'].lower == 'yes'):
+        highbp = 1
+    else:
+        highbp = 0
+    if(input_dictionary['HeartAttack'].lower == 'yes'):
+        heartattack = 1
+    else:
+        heartattack = 0 
+    age = input_dictionary['Age']
+    if (input_dictionary['Gender'].lower == 'female'):
+        sex = 0
+    else:
+        sex = 1
+    if(input_dictionary['HighCholesterol'].lower == 'yes'):
+        highchol = 1
+    else:
+        highchol = 0
+    if(input_dictionary['Stroke'].lower == 'past history'):
+        stroke = 1
+    else: 
+        stroke = 0
+    if(input_dictionary['CholesterolCheck'].lower == 'within 1 year'):
+        cholesterol = 0
+    else:
+        cholesterol = 1
+    bmi = float(input_dictionary['BMI'])
+    # bmi = float(input_dictionary['BMI'])
+    if(input_dictionary['Smoke'].lower == 'smoker'):
+        smoke = 1
+    else:
+        smoke = 0
+    if(input_dictionary['Veggies'].lower == 'yes'):
+        veggies = 1
+    else:
+        veggies = 0
+    if(input_dictionary['Fruits'].lower == 'yes'):
+        fruits = 1
+    else:
+        fruits = 0
+    if(input_dictionary['Alcohol'].lower == 'alcoholic'):
+        alco = 1
+    else:
+        alco = 0
+    if(input_dictionary['Active'].lower == 'active'):
+        active = 1
+    else:
+        active = 0
+
+    loaded_model = pickle.load(open('finalized_model.sav', 'rb'))
+
+    with open('scaler2.pkl', 'rb') as f:  # 'rb' = read binary mode
+        loaded_scaler = pickle.load(f)
+    
+    new_patient = [highbp, highchol, cholesterol, bmi, smoke, stroke, heartattack, active, fruits, veggies, alco, sex, age]
+    person_data_scaled = loaded_scaler.transform([new_patient])
+    prediction = loaded_model.predict(person_data_scaled)
+    result = "Diabetes" if prediction[0] == 1 else "No Diabetes"
+    return jsonify({"result": result})
+
+@app.route('/detect', methods=['GET', 'POST'])
 def findHealthIssue():
     client = InferenceClient(
 	provider="together",
@@ -79,7 +149,7 @@ def findHealthIssue():
     "You are a medical assistant that only provides information on health-related topics. "
     "If a question is not related to health or medicine, respond with 'I can only answer "
     "health-related questions.' Please provide accurate and helpful information for "
-    "health-related queries. and act as if you don't know that domain. State your points in brief"
+    "health-related queries. and act as if you don't know that domain. State your points in brief. "
     )
 
     messages = [
