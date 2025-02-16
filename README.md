@@ -3,6 +3,17 @@
 
 A comprehensive healthcare prediction system combining AI models for diabetes and cardiovascular disease prediction, along with symptom analysis using HuggingFace's API. The system is accessible through a cross-platform mobile application built with React Native.
 
+## 🎯 Mission
+To democratize access to preliminary health screening by leveraging artificial intelligence, making it easier for people to monitor their health risks and seek timely medical intervention.
+
+## 🔭 Vision
+We envision a world where preventive healthcare is accessible to everyone, everywhere. By combining the power of AI with mobile technology, we aim to:
+- Empower individuals to take proactive steps in monitoring their health
+- Reduce the barriers to preliminary health screening
+- Support early detection of potential health risks
+- Bridge the gap between technology and healthcare accessibility
+- Assist healthcare professionals with additional screening tools
+
 ## 📂 Related Repositories
 
 This project is split into two repositories:
